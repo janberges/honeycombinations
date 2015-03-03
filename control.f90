@@ -7,6 +7,7 @@ module control
    use hamiltonian
    use montecarlo
    use neighborhood
+   use out
    use parser
    use plot
    use random
@@ -148,50 +149,31 @@ contains
    subroutine record(content, file)
       character(*), intent(in) :: content, file
       
-      integer, parameter :: unit = 14
-      
-      integer :: i
-      character(20) :: form
-      
       select case(content)
          case ('psi')
             if (todo%energies) call energies
-            
-            write (form, "('(', I0, 'ES13.5E2)')") s%dim
-            
-            open(unit, file=file, action='write', status='replace', form='formatted')
-            do i = 1, s%dim
-               write (unit, form) s%psi(i, :)
-            end do
-            close(unit)
+
+            call save(file, s%psi, '(ES13.5E2)')
          
          case ('ls', 'config')
             if (todo%configuration) call randomize
-            
-            open(unit, file=file, action='write', status='replace', form='formatted')
-            write (unit, '(I0)') s%ls(:s%nX)
-            close(unit)
+
+            call save(file, s%ls(:s%nX))
          
          case ('E', 'energies')
             if (todo%energies) call energies
-            
-            open(unit, file=file, action='write', status='replace', form='formatted')
-            write (unit, '(ES19.13E1)') s%W(:s%dim, s%i)
-            close(unit)
+
+            call save(file, s%W(:s%dim, s%i))
          
          case ('P', 'chances')
             if (todo%correlations) call correlations
-            
-            open(unit, file=file, action='write', status='replace', form='formatted')
-            write (unit, '(F16.14)') s%chances(:)
-            close(unit)
+
+            call save(file, s%chances(:), '(F16.14)')
          
          case ('matches')
             if (todo%correlations) call correlations
-            
-            open(unit, file=file, action='write', status='replace', form='formatted')
-            write (unit, '(I0)') s%matches(:)
-            close(unit)
+
+            call save(file, s%matches(:))
          
          case default
             write (*, '(3A)') "Did not save unknown content '", content, "'"
