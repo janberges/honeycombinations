@@ -1,0 +1,6 @@
+.*
+!.gitignore
+*.o
+*.mod
+comb
+makefile
