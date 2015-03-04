@@ -2,5 +2,5 @@
 !.gitignore
 *.o
 *.mod
-comb
+honeycombinations
 makefile
