@@ -108,9 +108,9 @@ contains
       todo%space = .false.
       
       call alloc(s%W, s%dimax, 2)
+      call alloc(s%psi, s%dim, s%dim)
       
       if (s%rrr) then
-         call alloc(s%psi, s%dim, s%dim)
          call alloc(isuppz, 2 * s%dimax)
       
          lwork = max(             &

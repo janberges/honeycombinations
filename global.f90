@@ -36,7 +36,7 @@ module global
       character ::     &
          &    C = '.', &
          &    X = 'o', &
-         & jobz = 'V'   
+         & jobz = 'N'   
       
       character(10) :: file = 'data.txt'
       
@@ -44,8 +44,8 @@ module global
       
       logical ::             &
          &   time = .false., &
-         &   show = .false., &
-         &    rrr = .true., &
+         &   show = .true.,  &
+         &    rrr = .true.,  &
          &  color = .true.
    end type system
    

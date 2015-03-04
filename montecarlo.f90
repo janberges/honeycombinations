@@ -3,6 +3,7 @@ module montecarlo
    use conversion
    use energy
    use global
+   use neighborhood
    use plot
    use transposition
    implicit none
@@ -11,40 +12,32 @@ module montecarlo
    public :: vary, markov
 contains
    
-   subroutine vary
-      integer, save :: i = 0
+   subroutine vary(change)
+      logical, intent(out), optional :: change
       
-      real(dp) :: r, a, x, y
-      
-      integer :: old, new
+      integer :: from, to
+      real(dp) :: r
+      logical :: tmp
       
       if (todo%energy) call total_energy
       
+      if (present(change)) change = .false.
+      
       if (s%nX .lt. 2) return
       
-      i = modulo(i, s%nX) + 1
+      call jump(from, to)
       
-      call random_number(r)
-      call random_number(a)
+      if (s%map(to) .le. s%nX) return
       
-      r = 0.5_dp + (s%r - 0.5_dp) * r
-      a = 2.0_dp * pi * a
+      call swap(from, to)
       
-      old = s%ls(i)
+      if (present(change)) change = .true.
+
+      tmp = todo%correlations
       
-      call n2xy(old, x, y)
-      
-      x = x + r * cos(a)
-      y = y + r * sin(a)
-      
-      call xy2n(x, y, new)
-      
-      if (s%map(new) .le. s%nX) return
-      
-      call swap(old, new)
-      
-      todo%energies = .true.
-      todo%penalty = .true.
+      todo%energies     = .true.
+      todo%penalty      = .true.
+      todo%correlations = .true.
       
       call total_energy
       
@@ -56,16 +49,53 @@ contains
          if (r .lt. exp((s%E(3 - s%i) - s%E(s%i)) / s%kT)) return
       end if
       
-      call swap(old, new)
+      call swap(from, to)
+      
+      if (present(change)) change = .false.
+      
+      todo%correlations = tmp
    end subroutine vary
+
+   subroutine jump(from, to)
+      integer, intent(out) :: from, to
+      
+      integer, save :: i = 0
+      real(dp) :: r, a, x, y
+      
+      i = modulo(i, s%nX) + 1
+      
+      from = s%ls(i)
+      
+      call n2xy(from, x, y)
+
+      call random_number(r)
+      call random_number(a)
+      
+      r = 0.5_dp + (s%r - 0.5_dp) * r
+      a = 2.0_dp * pi * a
+      
+      x = x + r * cos(a)
+      y = y + r * sin(a)
+      
+      call xy2n(x, y, to)
+   end subroutine jump
    
    subroutine markov
       integer :: i
+      logical :: change
       
       do i = 1, s%n
-         call vary
-         call clear
-         call show_lattice
+         call vary(change)
+         
+         if (s%show .and. change) then
+            call clear
+            
+            call show_lattice
+
+            write (*, "(/, 'Neighborship probabilities &
+               &(no correlation at ', I0, '%):')") nint(s%nX * 100.0_dp / s%nC)
+            call show_correlations
+         end if
       end do
    end subroutine markov
 end module montecarlo
