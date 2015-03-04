@@ -53,7 +53,7 @@ contains
          if (l .gt. lmax) lmax = l
       end do
       
-      allocate(character(l) :: cmd)
+      allocate(character(lmax) :: cmd)
       
       do i = 1, command_argument_count()
          call get_command_argument(i, cmd, l)

@@ -113,7 +113,7 @@ contains
          call alloc(s%psi, s%dim, s%dim)
          call alloc(isuppz, 2 * s%dimax)
       
-         lwork = max(           &
+         lwork = max(             &
             & 1,                  &
             & 26 * s%dimax,       &
             & s%dimax * (1 + max( &
