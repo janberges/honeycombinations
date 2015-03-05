@@ -100,11 +100,18 @@ contains
    end subroutine transpose
    
    subroutine markov
-      integer :: i
       logical :: change
+      integer :: i
+      real(dp) :: average, error
+      
+      if (todo%table) call table
       
       do i = 1, s%n
          call vary(change)
+
+         if (todo%correlations) call correlations
+         
+         s%table(i, :) = s%chances
          
          if (s%show .and. change) then
             call clear
@@ -115,6 +122,15 @@ contains
                &(no correlation at ', I0, '%):')") nint(s%nX * 100.0_dp / s%nC)
             call show_correlations
          end if
+      end do
+
+      write (*, "(/, 'Averages and average absoulte deviations:')")
+      
+      do i = 1, size(s%table, 2)
+         average = sum(s%table(:, i)) / s%n
+         error = sum(abs(s%table(:, i) - average)) / s%n
+         
+         write (*, "('P(', A, ') = ', F5.3, ' +/- ', F5.3)") trim(adjustl(s%labels(i))), average, error
       end do
    end subroutine markov
 end module montecarlo

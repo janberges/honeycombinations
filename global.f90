@@ -18,7 +18,12 @@ module global
          &   dim = 220, &
          & dimax = 400
       
-      integer, allocatable :: ls(:), map(:), px(:), neighbors(:, :), matches(:)
+      integer, allocatable :: &
+         &        ls(:),      &
+         &       map(:),      &
+         &        px(:),      &
+         & neighbors(:, :),   &
+         &   matches(:)
       
       real(dp) ::       &
          & eC = 0.0_dp, &
@@ -31,7 +36,13 @@ module global
       
       real(dp) :: E(2), penalty(2)
       
-      real(dp), allocatable :: H(:, :), wH(:, :), W(:, :), psi(:, :), chances(:)
+      real(dp), allocatable :: &
+         &       H(:, :),      &
+         &      wH(:, :),      &
+         &       W(:, :),      &
+         &     psi(:, :),      &
+         & chances(:),         &
+         &   table(:, :)
       
       character ::     &
          &    C = '.', &
@@ -41,6 +52,7 @@ module global
       character(10) :: file = 'data.txt'
       
       character, allocatable :: plot(:)
+      character(3), allocatable :: labels(:)
       
       logical ::             &
          &   time = .false., &
@@ -60,7 +72,8 @@ module global
          &  correlations = .true., &
          & configuration = .true., &
          &         space = .true., &
-         &          plot = .true.
+         &          plot = .true., &
+         &         table = .true.
    end type dependencies
    
    type(system), save :: s

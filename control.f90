@@ -174,12 +174,17 @@ contains
          case ('P', 'chances')
             if (todo%correlations) call correlations
 
-            call save(file, s%chances(:), '(F16.14)')
+            call save(file, s%chances, '(F16.14)')
+
+         case ('table')
+            if (todo%table) call table
+
+            call save(file, s%table, '(F10.7)')
          
          case ('matches')
             if (todo%correlations) call correlations
 
-            call save(file, s%matches(:))
+            call save(file, s%matches)
          
          case default
             write (*, '(3A)') "Did not save unknown content '", content, "'"
@@ -255,6 +260,7 @@ contains
          
          case ('n')
             call parse(value, s%n)
+            todo%table = .true.
          
          case ('show')
             call parse(value, s%show)

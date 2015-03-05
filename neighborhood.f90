@@ -6,13 +6,11 @@ module neighborhood
    implicit none
    private
    
-   public :: neighbors, new_order, correlations, show_correlations, penalty, get_kind
+   public :: neighbors, new_order, table, correlations, show_correlations, penalty, get_kind
    
    integer :: kinds
    
    integer, allocatable :: offset(:), steps(:), lower(:), upper(:), howmany(:)
-   
-   character(3), allocatable :: labels(:)
    
 contains
    
@@ -23,6 +21,7 @@ contains
       if (todo%configuration) call randomize
       
       todo%neighbors = .false.
+      todo%table     = .true.
       
       ! There are 3n nth nearest neighbors. Following Gauß:
       
@@ -42,7 +41,7 @@ contains
       call alloc(howmany,   kinds)
       call alloc(s%matches, kinds)
       call alloc(s%chances, kinds)
-      call alloc(labels,    kinds)
+      call alloc(s%labels,  kinds)
       
       i = 1
       do j = 1, s%d
@@ -60,7 +59,7 @@ contains
             steps(i) = step
             howmany(i) = count
             
-            write(labels(i), '(I2, A)') j, achar(96 + k)
+            write(s%labels(i), '(I2, A)') j, achar(96 + k)
             
             i = i + 1
          end do
@@ -123,7 +122,7 @@ contains
       todo%penalty      = .true.
       todo%correlations = .true.
       
-      write (*, "('New order: ', A)") trim(adjustl(labels(kind)))
+      write (*, "('New order: ', A)") trim(adjustl(s%labels(kind)))
       
       call swap(s%l * (1 + s%l / 4 * 2), s%ls(1))
       
@@ -140,6 +139,14 @@ contains
          end do
       end do
    end subroutine new_order
+
+   subroutine table
+      if (todo%neighbors) call neighbors
+      
+      todo%table = .false.
+      
+      call alloc(s%table, s%n, kinds)
+   end subroutine table
    
    subroutine correlations
       integer :: i, j, k
@@ -171,9 +178,9 @@ contains
       if (todo%correlations) call correlations
       
       do i = 1, kinds
-         write (*, '(A, 1X, I3, 2A)')                   &
-            labels(i),  nint(100 * s%chances(i)), '% ', &
-            repeat('=', nint( 80 * s%chances(i)))
+         write (*, '(A, 1X, I3, 2A)')                    &
+            s%labels(i), nint(100 * s%chances(i)), '% ', &
+            repeat('=',  nint( 80 * s%chances(i)))
       end do
    end subroutine show_correlations
    
@@ -228,7 +235,7 @@ contains
       end select
       
       do i = 1, kinds
-         if (label .eq. adjustl(labels(i))) kind = i
+         if (label .eq. adjustl(s%labels(i))) kind = i
       end do
    end subroutine get_kind
 end module neighborhood
