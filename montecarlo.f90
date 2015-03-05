@@ -20,40 +20,44 @@ contains
       logical :: tmp
       
       if (todo%energy) call total_energy
-      
+
       if (present(change)) change = .false.
       
-      if (s%nX .lt. 2) return
+      if (s%nX .lt. 2 .or. s%nC - s%nX .lt. 2) return
       
-      call jump(from, to)
-      
-      if (s%map(to) .le. s%nX) return
+      if (present(change)) then
+         call jump(from, to)
+
+         if (s%map(to) .le. s%nX) return
+
+         change = .true.
+         tmp = todo%correlations
+      else
+         call transpose(from, to)
+      end if
       
       call swap(from, to)
-      
-      if (present(change)) change = .true.
-
-      tmp = todo%correlations
       
       todo%energies     = .true.
       todo%penalty      = .true.
       todo%correlations = .true.
       
-      call total_energy
-      
-      if (s%E(s%i) .lt. s%E(3 - s%i)) return
-      
-      if (s%kT .na. 0.0_dp) then
-         call random_number(r)
+      if (present(change)) then
+         call total_energy
          
-         if (r .lt. exp((s%E(3 - s%i) - s%E(s%i)) / s%kT)) return
+         if (s%E(s%i) .lt. s%E(3 - s%i)) return
+         
+         if (s%kT .na. 0.0_dp) then
+            call random_number(r)
+            
+            if (r .lt. exp((s%E(3 - s%i) - s%E(s%i)) / s%kT)) return
+         end if
+         
+         call swap(from, to)
+      
+         change = .false.
+         todo%correlations = tmp
       end if
-      
-      call swap(from, to)
-      
-      if (present(change)) change = .false.
-      
-      todo%correlations = tmp
    end subroutine vary
 
    subroutine jump(from, to)
@@ -79,6 +83,21 @@ contains
       
       call xy2n(x, y, to)
    end subroutine jump
+
+   subroutine transpose(from, to)
+      integer, intent(out) :: from, to
+      
+      integer, save :: i = 0
+      real(dp) :: r
+      
+      i = modulo(i, s%nX) + 1
+      
+      from = s%ls(i)
+      
+      call random_number(r)
+      
+      to = s%nX + int((s%nC - s%nX) * r) + 1
+   end subroutine transpose
    
    subroutine markov
       integer :: i

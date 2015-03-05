@@ -93,6 +93,8 @@ contains
    
    subroutine run(cmd)
       character(*), intent(in) :: cmd
+
+      logical :: change
       
       if (s%time) call time
       
@@ -104,6 +106,10 @@ contains
             call clear
          
          case ('vary')
+            call vary(change)
+            write (*, "('System  ', A)") merge('varied', 'steady', change)
+
+         case ('move')
             call vary
          
          case ('H', 'Hamiltonian', 'h', 'hamiltonian')
