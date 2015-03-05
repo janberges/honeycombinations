@@ -13,9 +13,9 @@ module global
       
       integer :: &
          &    nC = 200, &
-         &    nX = 2,   &
-         &    ne = 101, &
-         &   dim = 202, &
+         &    nX = 20,  &
+         &    ne = 220, &
+         &   dim = 220, &
          & dimax = 400
       
       integer, allocatable :: ls(:), map(:), px(:), neighbors(:, :), matches(:)

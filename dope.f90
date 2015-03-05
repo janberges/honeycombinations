@@ -11,9 +11,9 @@ contains
    subroutine change_coverage(nX)
       integer, intent(inout) :: nX
       
-      todo%energies = .true.
-      todo%energy = .true.
-      todo%penalty = .true.
+      todo%energies     = .true.
+      todo%energy       = .true.
+      todo%penalty      = .true.
       todo%correlations = .true.
       
       nX = min(max(nX, 0), s%nC)
@@ -24,7 +24,8 @@ contains
          s%plot(s%px(s%ls(s%nX + 1:nX))) = s%X
          s%plot(s%px(s%ls(nX + 1:s%nX))) = s%C
       end if
-      
+
+      s%ne = s%ne - s%nX + nX
       s%nX = nX
       s%dim = s%nC + s%nX
       

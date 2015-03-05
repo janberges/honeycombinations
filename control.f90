@@ -189,8 +189,8 @@ contains
    subroutine set(key, value)
       character(*), intent(in) :: key, value
       
-      integer :: nX = 0, ne = 0, kind
-      real(dp) :: cX = 0.1, ce = 0.0
+      integer :: nX, ne, kind
+      real(dp) :: cX, ce
       
       select case(key)
          case ('l', 'size')
@@ -199,17 +199,14 @@ contains
             todo = dependencies()
             
             s%l = max(s%l, 0)
-            
             s%nC = 2 * s%l ** 2
+            s%dimax = 2 * s%nC
             
-            nX = 2
-            call change_coverage(nX)
+            call change_coverage(s%nX)
             
             s%dim = s%nC + s%nX
             
             call change_charge(s%dim)
-            
-            s%dimax = 2 * s%nC
          
          case ('cX', 'coverage')
             call parse(value, cX)
