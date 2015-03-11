@@ -8,58 +8,94 @@ module montecarlo
    use transposition
    implicit none
    private
+
+   interface vary
+      module procedure vary_blind, vary_sighted
+   end interface vary
    
    public :: vary, markov
 contains
    
-   subroutine vary(change)
-      logical, intent(out), optional :: change
+   subroutine vary_blind(change)
+      logical, intent(out) :: change
       
       integer :: from, to
-      real(dp) :: r
       logical :: tmp
       
       if (todo%energy) call total_energy
 
-      if (present(change)) change = .false.
+      change = .false.
       
       if (s%nX .lt. 2 .or. s%nC - s%nX .lt. 2) return
       
-      if (present(change)) then
-         call jump(from, to)
-
-         if (s%map(to) .le. s%nX) return
-
-         change = .true.
-         tmp = todo%correlations
-      else
-         call transpose(from, to)
-      end if
+      call jump(from, to)
+      
+      if (s%map(to) .le. s%nX) return
+      
+      change = .true.
       
       call swap(from, to)
       
+      tmp = todo%correlations
       todo%energies     = .true.
+      todo%energy       = .true.
+      todo%penalty      = .true.
+      todo%correlations = .true.
+
+      if (.not. accepted()) then
+         call swap(from, to)
+         
+         change = .false.
+         
+         todo%correlations = tmp
+      end if
+   end subroutine vary_blind
+
+   subroutine vary_sighted
+      integer :: from, to
+      logical :: tmp
+      
+      if (todo%energy) call total_energy
+
+      if (s%nX .lt. 2 .or. s%nC - s%nX .lt. 2) return
+      
+      call transpose(from, to)
+      
+      call swap(from, to)
+
+      tmp = todo%correlations
+      todo%energies     = .true.
+      todo%energy       = .true.
       todo%penalty      = .true.
       todo%correlations = .true.
       
-      if (present(change)) then
-         call total_energy
-         
-         if (s%E(s%i) .lt. s%E(3 - s%i)) return
-         
-         if (s%kT .na. 0.0_dp) then
-            call random_number(r)
-            
-            if (r .lt. exp((s%E(3 - s%i) - s%E(s%i)) / s%kT)) return
-         end if
-         
+      if (.not. accepted()) then
          call swap(from, to)
-      
-         change = .false.
+         
          todo%correlations = tmp
       end if
-   end subroutine vary
+   end subroutine vary_sighted
 
+   function accepted()
+      logical :: accepted
+
+      real(dp) :: r
+      
+      accepted = .true.
+      
+      if (todo%energy) call total_energy
+      
+      if (s%E(s%i) .lt. s%E(3 - s%i)) return
+         
+      if (s%kT .na. 0.0_dp) then
+         call random_number(r)
+         
+         if (r .lt. exp((s%E(3 - s%i) - s%E(s%i)) / s%kT)) return
+      end if
+
+      accepted = .false.
+   end function accepted
+   
    subroutine jump(from, to)
       integer, intent(out) :: from, to
       
@@ -99,29 +135,38 @@ contains
       to = s%nX + int((s%nC - s%nX) * r) + 1
    end subroutine transpose
    
-   subroutine markov
-      logical :: change
+   subroutine markov(change)
+      logical, intent(out), optional :: change
+      
       integer :: i
       real(dp) :: average, error
       
       if (todo%table) call table
       
       do i = 1, s%n
-         call vary(change)
+         if (present(change)) then
+            call vary(change)
+         else
+            call vary
+         end if
 
          if (todo%correlations) call correlations
          
          s%table(i, :) = s%chances
-         
-         if (s%show .and. change) then
-            call clear
-            
-            call show_lattice
 
-            write (*, "(/, 'Neighborship probabilities &
-               &(no correlation at ', I0, '%):')") nint(s%nX * 100.0_dp / s%nC)
-            call show_correlations
+         if (.not. s%show) cycle
+         
+         if (present(change)) then
+            if (.not. change) cycle
          end if
+         
+         call clear
+          
+         call show_lattice
+         
+         write (*, "(/, 'Neighborship probabilities &
+            &(no correlation at ', I0, '%):')") nint(s%nX * 100.0_dp / s%nC)
+         call show_correlations
       end do
 
       write (*, "(/, 'Averages and average absoulte deviations:')")

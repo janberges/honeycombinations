@@ -127,8 +127,11 @@ contains
          case ('seed', 'sow')
             call sow
          
-         case ('markov')
+         case ('go', 'go_sighted')
             call markov
+
+         case ('go_blind')
+            call markov(change)
             
          case ('mix')
             call randomize
