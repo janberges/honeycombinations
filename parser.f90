@@ -16,18 +16,9 @@ contains
       logical, intent(out) :: var
       logical, intent(out), optional :: ok
       
-      logical :: tmp
-      integer :: stat
+      var = scan(str, '1Tt') .ne. 0
       
-      read (str, *, iostat=stat) tmp
-      
-      if (present(ok)) ok = stat .eq. 0
-      
-      if (stat .eq. 0) then
-         var = tmp
-      else
-         write (*, "('Ignored statement because of a bad logical value')")
-      end if
+      if (present(ok)) ok = .true.
    end subroutine parse_logical
    
    subroutine parse_integer(str, var, ok)

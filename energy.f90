@@ -31,7 +31,9 @@ contains
       write (*, "('E = ', F0.3, ' eV')") s%E(s%i)
    end subroutine show_energy
    
-   subroutine count_zeros
+   subroutine count_zeros(zeros)
+      integer, intent(out), optional :: zeros
+      
       integer :: i, n
       
       if (todo%energies) call energies
@@ -41,7 +43,11 @@ contains
       do i = 1, s%nX
          n = n + 2 * modulo(s%ls(i), 2) - 1
       end do
-      
-      write (*, '(I0, 1X, I0)') count(s%W(:s%dim, s%i) .ap. 0.0_dp), n
+
+      if (present(zeros)) then
+         zeros = count(s%W(:s%dim, s%i) .ap. 0.0_dp)
+      else
+         write (*, '(I0, 1X, I0)') count(s%W(:s%dim, s%i) .ap. 0.0_dp), n
+      end if
    end subroutine count_zeros
 end module energy

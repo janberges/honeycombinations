@@ -127,11 +127,12 @@ contains
          case ('seed', 'sow')
             call sow
          
-         case ('go', 'go_sighted')
-            call markov
-
-         case ('go_blind')
-            call markov(change)
+         case ('go')
+            if (s%blind) then
+               call markov(change)
+            else
+               call markov
+            end if
             
          case ('mix')
             call randomize
@@ -234,7 +235,7 @@ contains
          
          case ('ne', 'electrons')
             call parse(value, ne)
-            call change_coverage(ne)
+            call change_charge(ne)
          
          case ('eC')
             call parse(value, s%eC)
@@ -277,6 +278,9 @@ contains
          
          case ('color')
             call parse(value, s%color)
+
+         case ('blind')
+            call parse(value, s%blind)
          
          case ('jobz')
             s%jobz = value

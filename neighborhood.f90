@@ -145,7 +145,7 @@ contains
       
       todo%table = .false.
       
-      call alloc(s%table, s%n, kinds)
+      call alloc(s%table, s%n, kinds + 3)
    end subroutine table
    
    subroutine correlations

@@ -55,10 +55,11 @@ module global
       character(3), allocatable :: labels(:)
       
       logical ::             &
-         &   time = .false., &
-         &   show = .true.,  &
-         &    rrr = .true.,  &
-         &  color = .true.
+         &  time = .false., &
+         &  show = .true.,  &
+         &   rrr = .true.,  &
+         & color = .true.,  &
+         & blind = .true.
    end type system
    
    type dependencies
