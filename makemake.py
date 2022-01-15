@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from os import listdir
 from re import search, IGNORECASE as i
@@ -56,7 +56,7 @@ $(EXECUTABLE): {objects}
 
 cmd = ce=0:0.01:0.2 cX=0.01:0.01:0.2
 
-ARGUMENTS := $(shell python arg.py $(cmd))
+ARGUMENTS := $(shell python3 arg.py $(cmd))
 
 .PHONY: clean cleaner jobs $(ARGUMENTS)
 

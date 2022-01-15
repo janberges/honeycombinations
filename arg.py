@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from sys import argv
 
@@ -11,7 +11,7 @@ for arg in argv[1:]:
     if i:
         keys.append(arg[:i])
 
-        t = map(float, arg[i:].split(':'))
+        t = list(map(float, arg[i:].split(':')))
     
         x1, dx, x2 = (t[0], 1.0, t[0]) if len(t) == 1 \
                 else (t[0], 1.0, t[1]) if len(t) == 2 \
@@ -33,4 +33,4 @@ def combis(n=0):
                 yield [keys[n] + value] + arg
 
 for _ in combis():
-    print '\ '.join(_)
+    print('\ '.join(_))

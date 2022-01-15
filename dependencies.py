@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import re
@@ -11,7 +11,7 @@ names = sorted(name[:-4] for name in os.listdir('.') if '.f90' in name)
 sub = None
 
 for name in names:
-    print name.upper()
+    print(name.upper())
     
     with open('%s.f90' % name) as file:
         for line in file:
@@ -22,10 +22,10 @@ for name in names:
             
             match = re.search(r'if\s*\(todo%(\w+)', line, re.IGNORECASE)
             if match:
-                print 'dependency: ' + sub + ' < ' + match.group(1)
+                print('dependency: ' + sub + ' < ' + match.group(1))
                 continue
 
             match = re.search(r'todo%(\w+)\s*=\s*\.(true|false)\.', line, re.IGNORECASE)
             if match:
-                print ('side effect: ' if match.group(2) == 'true' else 'job done: ') + sub + ' > ' + match.group(1)
+                print(('side effect: ' if match.group(2) == 'true' else 'job done: ') + sub + ' > ' + match.group(1))
                 continue
