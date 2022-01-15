@@ -149,7 +149,7 @@ contains
             loop = .false.
 
          case default
-            write (*, '(3A)') "Ignored unknown parameter '", cmd, "'"
+            write (*, '(3A)') "Ignored unknown command '", cmd, "'"
       end select
 
       if (s%time) call time('This')
