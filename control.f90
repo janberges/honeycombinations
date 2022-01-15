@@ -141,7 +141,7 @@ contains
 
          case ('0')
             call count_zeros
-			
+
          case ('move1')
             call stability
 
