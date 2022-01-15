@@ -6,28 +6,28 @@ module out
    public :: save
 
    integer, parameter :: unit = 14
-   
+
    interface save
       module procedure           &
          & integer1D, integer2D, &
          &    real1D,    real2D
    end interface save
-   
+
 contains
 
    subroutine integer1D(file, data, form)
       character(*), intent(in) :: file
       integer, intent(in) :: data(:)
       character(*), intent(in), optional :: form
-      
+
       open(unit, file=file, action='write', status='replace', form='formatted')
-      
+
       if (present(form)) then
          write (unit, form) data
       else
          write (unit, '(I0)') data
       end if
-      
+
       close(unit)
    end subroutine integer1D
 
@@ -35,15 +35,15 @@ contains
       character(*), intent(in) :: file
       real(dp), intent(in) :: data(:)
       character(*), intent(in), optional :: form
-      
+
       open(unit, file=file, action='write', status='replace', form='formatted')
-      
+
       if (present(form)) then
          write (unit, form) data
       else
          write (unit, '(ES21.13E3)') data
       end if
-      
+
       close(unit)
    end subroutine real1D
 
@@ -60,7 +60,7 @@ contains
       else
          fmt = '(I5)'
       end if
-      
+
       open(unit, file=file, action='write', status='replace', form='formatted')
 
       do i = 1, size(data, 1)
@@ -69,7 +69,7 @@ contains
          end do
          write (unit, '()')
       end do
-      
+
       close(unit)
    end subroutine integer2D
 
@@ -86,7 +86,7 @@ contains
       else
          fmt = '(ES22.13E3)'
       end if
-      
+
       open(unit, file=file, action='write', status='replace', form='formatted')
 
       do i = 1, size(data, 1)
@@ -95,7 +95,7 @@ contains
          end do
          write (unit, '()')
       end do
-      
+
       close(unit)
    end subroutine real2D
 end module out

@@ -12,14 +12,14 @@ sub = None
 
 for name in names:
     print(name.upper())
-    
+
     with open('%s.f90' % name) as file:
         for line in file:
             match = re.search(r'(\bend\s+)?\bsubroutine\s+(\w+)', line, re.IGNORECASE)
             if match and not match.group(1):
                 sub = match.group(2)
                 continue
-            
+
             match = re.search(r'if\s*\(todo%(\w+)', line, re.IGNORECASE)
             if match:
                 print('dependency: ' + sub + ' < ' + match.group(1))

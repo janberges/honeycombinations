@@ -27,7 +27,7 @@ LA = /home/jberges/la
 LAPACK = $(LA)/lapack-3.5.0
 BLAS = $(LA)/BLAS
 ''')
-    
+
     makefile.write('''
 COMPILER = {compiler}
 OPTIONS = {options}
@@ -45,13 +45,13 @@ $(EXECUTABLE): {objects}
 	
     for f90, o in zip(F90, O):
         makefile.write('\n' + o + ':')
-        
+
         with open(f90) as code:
             for line in code:
                 use = search(r'^\s*use\s+(\w+)', line, i)
                 if use:
                     makefile.write(' ' + use.group(1) + '.o')
-    
+
     makefile.write('''
 
 cmd = ce=0:0.01:0.2 cX=0.01:0.01:0.2
