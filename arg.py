@@ -33,4 +33,4 @@ def combis(n=0):
                 yield [keys[n] + value] + arg
 
 for _ in combis():
-    print('\ '.join(_))
+    print(r'\ '.join(_))
