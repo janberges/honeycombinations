@@ -30,7 +30,7 @@ contains
       character(50) :: cmd
 
       integer, parameter :: unit = 11
-      integer, save      :: stat = 0
+      integer :: stat
 
       open(unit, file=file, action='read', status='old', form='formatted')
 
