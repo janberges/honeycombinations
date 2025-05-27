@@ -12,6 +12,7 @@ module control
    use plot
    use random
    use timer
+   use, intrinsic :: iso_fortran_env, only: iostat_end
 
    use move_one
    implicit none
@@ -64,9 +65,18 @@ contains
    subroutine read_stdin
       character(50) :: cmd
 
+      integer :: stat
+
       do while (loop)
          write (*, "('> ')", advance='no')
-         read (*, *) cmd
+         read (*, *, iostat=stat) cmd
+         if (stat .eq. iostat_end) then
+            cmd = 'bye'
+            write (*, '(A)') cmd
+         else if (stat .ne. 0) then
+            write (*, "('Input error')")
+            stop
+         end if
          call eval(trim(cmd))
       end do
    end subroutine read_stdin
