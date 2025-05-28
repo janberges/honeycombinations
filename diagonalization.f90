@@ -16,6 +16,7 @@ module diagonalization
    interface
       subroutine dsyev(jobz, uplo, n, a, lda, w, work, lwork, info)
          use global
+         implicit none
 
          character, intent(in) :: jobz, uplo
 
@@ -29,6 +30,7 @@ module diagonalization
       subroutine dsyevr(jobz, range, uplo, n, a, lda, vl, vu, il, iu, abstol, &
             m, w, z, ldz, isuppz, work, lwork, iwork, liwork, info)
          use global
+         implicit none
 
          character, intent(in) :: jobz, range, uplo
 
@@ -41,6 +43,8 @@ module diagonalization
       end subroutine dsyevr
 
       integer function ilaenv(ispec, name, opts, n1, n2, n3, n4)
+         implicit none
+
          integer, intent(in) :: ispec, n1, n2, n3, n4
 
          character(*), intent(in) :: name, opts

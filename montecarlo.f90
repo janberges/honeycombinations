@@ -175,7 +175,8 @@ contains
          average = sum(s%table(:, i)) / s%n
          error = sum(abs(s%table(:, i) - average)) / s%n
 
-         write (*, "('P(', A, ') = ', F5.3, ' +/- ', F5.3)") trim(adjustl(s%labels(i))), average, error
+         write (*, "('P(', A, ') = ', F5.3, ' +/- ', F5.3)") &
+            trim(adjustl(s%labels(i))), average, error
       end do
    end subroutine markov
 end module montecarlo

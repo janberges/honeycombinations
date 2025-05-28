@@ -1,5 +1,6 @@
 module global
    implicit none
+   public
 
    integer, parameter :: dp = selected_real_kind(14, 300)
    real(dp), parameter :: pi = 4.0_dp * atan(1.0_dp)
