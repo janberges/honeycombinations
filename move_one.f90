@@ -20,7 +20,7 @@ contains
 
       call correlations
 
-      open(unit, file='move1/0.txt', action='write', status='replace', form='formatted')
+      open(unit, file='move1/0.txt', action='write', status='replace')
       write (unit, '(I0)') s%matches(1)
       write (unit, '(ES22.14E3)') s%W(:s%dim, s%i)
       close(unit)
@@ -39,7 +39,7 @@ contains
 
          write (file, "('move1/', I0, '.txt')") i - s%nX
 
-         open(unit, file=file, action='write', status='replace', form='formatted')
+         open(unit, file=file, action='write', status='replace')
          write (unit, '(I0)') s%matches(1)
          write (unit, '(ES22.14E3)') s%W(:s%dim, s%i)
          close(unit)

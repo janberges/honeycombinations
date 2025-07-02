@@ -6,7 +6,8 @@ module neighborhood
    implicit none
    private
 
-   public :: neighbors, new_order, table, correlations, show_correlations, penalty, get_kind
+   public :: neighbors, new_order, table, correlations, show_correlations, &
+      penalty, get_kind
 
    integer :: kinds
 
