@@ -32,7 +32,7 @@ $(programs):
 	$(FC) $(FFLAGS) -o $@ $^ $(LDLIBS)
 
 %.o: %.f90
-	$(FC) $(FFLAGS) -c $< -o $@
+	$(FC) $(FFLAGS) -o $@ -c $<
 
 honeycombinations: approx.o control.o conversion.o diagonalization.o dope.o dos.o energy.o global.o hamiltonian.o main.o memory.o montecarlo.o move_one.o neighborhood.o out.o parser.o plot.o random.o timer.o transposition.o
 
