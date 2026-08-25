@@ -1,14 +1,19 @@
-FC = gfortran
+FC := gfortran
 
-flags_gfortran = -std=f2003 -pedantic -Wall -Wno-maybe-uninitialized
-flags_ifort = -O0 -stand f03 -warn all
-flags_ifx = ${flags_ifort}
+flags_gfortran := -std=f2003 -pedantic -Wall -Wno-maybe-uninitialized
+flags_ifort := -O0 -stand f03 -warn all
+flags_ifx := ${flags_ifort}
+flags_flang := -Werror -fopenmp
+flags_flang-new := ${flags_flang}
 
-FFLAGS = ${flags_$(FC)}
+FFLAGS := ${flags_$(FC)}
+LDFLAGS := ${FFLAGS}
 
-libs_gfortran = -llapack -lblas
-libs_ifort = -lmkl_core -lmkl_intel_lp64 -lmkl_sequential
-libs_ifx = ${libs_ifort}
+libs_gfortran := -llapack -lblas
+libs_ifort := -lmkl_core -lmkl_intel_lp64 -lmkl_sequential
+libs_ifx := ${libs_ifort}
+libs_flang := ${libs_gfortran}
+libs_flang-new := ${libs_flang}
 
 LDLIBS = ${libs_$(FC)}
 
@@ -16,7 +21,7 @@ LDLIBS = ${libs_$(FC)}
 
 needless += approx.o control.o conversion.o diagonalization.o dope.o dos.o energy.o global.o hamiltonian.o main.o memory.o montecarlo.o move_one.o neighborhood.o out.o parser.o plot.o random.o timer.o transposition.o *.mod
 
-programs = honeycombinations
+programs := honeycombinations
 
 .PHONY: all clean cleaner
 
@@ -29,7 +34,7 @@ cleaner: clean
 	rm -f $(programs)
 
 $(programs):
-	$(FC) $(FFLAGS) -o $@ $^ $(LDLIBS)
+	$(FC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 %.o: %.f90
 	$(FC) $(FFLAGS) -o $@ -c $<
